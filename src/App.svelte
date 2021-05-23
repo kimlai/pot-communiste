@@ -155,7 +155,7 @@
       {#each Object.values(participants) as participant}
         <div>{participant.name}</div>
         <div class="input--with-unit">
-          <input inputmode="number" on:input={setParticipation(participant.name)} />
+          <input inputmode="numeric" on:input={setParticipation(participant.name)} />
           <div>€</div>
         </div>
       {/each}
