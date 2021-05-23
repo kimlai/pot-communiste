@@ -71,8 +71,7 @@ select {
   }
 }
 
-html,
-body {
+html {
   position: relative;
   width: 100%;
   height: 100%;
@@ -81,7 +80,7 @@ body {
 body {
   color: #333;
   margin: 0;
-  padding: 2rem 1rem;
+  padding: 4rem 1rem;
   box-sizing: border-box;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
