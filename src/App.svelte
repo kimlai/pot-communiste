@@ -159,27 +159,16 @@
           <div>€</div>
         </div>
       {/each}
-      <div><b>total</b></div>
-      <b>
-        <div class="input--with-unit">
-          <input disabled value="{totalParticipations}" />
-          <div>€</div>
-        </div>
-      </b>
-      <div><b>-&nbsp;dépenses</b></div>
-      <b>
-        <div class="input--with-unit">
-          <input disabled value="{totalSpent}" />
-          <div>€</div>
-        </div>
-      </b>
-      <div></div>
+      <div><b>équilibre</b></div>
       <b>
         <div class="input--with-unit">
           <input disabled value="{diff(totalParticipations - totalSpent)}" />
           <div>€</div>
         </div>
       </b>
+      <div>
+          {totalParticipations}€ de participation
+      </div>
     </div>
   </div>
   <h2>4. Préférences</h2>
