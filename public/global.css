@@ -165,3 +165,8 @@ main > * + * {
 * + h2 {
   margin-top: 2rem;
 }
+
+.new-pot {
+  display: grid;
+  place-items: center;
+}

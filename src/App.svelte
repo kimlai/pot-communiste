@@ -1,5 +1,15 @@
 <script>
+  import { onMount } from 'svelte';
+
   export let participants = {};
+  let id = new URLSearchParams(window.location.search).get("id");
+  let counts = [];
+  let transfers = [];
+
+  onMount(async () => {
+    counts = await idbKeyval.get("counts");
+    participants = counts.filter(count => count.id === id)[0].participants || {};
+  });
 
   $: totalSpent = Object.values(participants)
     .reduce((total, participant) => total + participant.spent, 0);
@@ -13,6 +23,16 @@
 
   $: creditors = Object.values(participants).filter(participant => participant.participation < participant.spent);
 
+  function saveState() {
+    for (const count of counts) {
+      if (count.id === id) {
+        count.participants = participants;
+        count.transfers = transfers;
+      }
+    }
+    idbKeyval.set("counts", counts);
+  }
+
   function addParticipant(e) {
     e.preventDefault();
     const form = e.target;
@@ -22,6 +42,8 @@
       participants,
       { [name]: { name, spent: 0, participation: 0, priorities: {} } }
     );
+
+    saveState();
   }
 
   function setSpent(name) {
@@ -29,6 +51,7 @@
       const spent = parseInt(e.target.value || 0, 10);
       const participant = Object.assign(participants[name], { spent });
       participants = Object.assign(participants, { [name]: participant });
+      saveState();
     }
   }
 
@@ -37,6 +60,7 @@
       const participation = parseInt(e.target.value || 0, 10);
       const participant = Object.assign(participants[name], { participation });
       participants = Object.assign(participants, { [name]: participant });
+      saveState();
     }
   }
 
@@ -46,6 +70,7 @@
       const participant = participants[debitor];
       participant.priorities[e.target.value] = priority;
       participants = Object.assign(participants, { [debitor]: participant });
+      saveState();
     }
   }
 
@@ -108,8 +133,6 @@
     return solve([...transfers, transfer]);
   }
 
-  let transfers = [];
-
   function handleSolve() {
     transfers = solve([]);
   }
@@ -134,7 +157,7 @@
       {#each Object.values(participants) as participant}
         <div>{participant.name}</div>
         <div class="input--with-unit">
-          <input inputmode="numeric" on:input={setSpent(participant.name)} />
+          <input inputmode="numeric" on:input={setSpent(participant.name)} value="{participant.spent}" />
           <div>€</div>
         </div>
       {/each}
@@ -155,7 +178,7 @@
       {#each Object.values(participants) as participant}
         <div>{participant.name}</div>
         <div class="input--with-unit">
-          <input inputmode="numeric" on:input={setParticipation(participant.name)} />
+          <input inputmode="numeric" on:input={setParticipation(participant.name)} value="{participant.participation}" />
           <div>€</div>
         </div>
       {/each}
@@ -166,10 +189,8 @@
           <div>€</div>
         </div>
       </b>
-      <div>
-          {totalParticipations}€ de participation
-      </div>
     </div>
+    <div>{totalParticipations}€ de participation</div>
   </div>
   <h2>4. Préférences</h2>
   <p>Vous pouvez indiquer pour chaque personne qui elle préfère devoir rembourser (optionnel).</p>
