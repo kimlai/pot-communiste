@@ -66,9 +66,13 @@
 
   function setPriority(debitor, priority) {
     return function(e) {
-      // TODO : handle when we delete a priority
       const participant = participants[debitor];
-      participant.priorities[e.target.value] = priority;
+      const creditor = e.target.value;
+      if (creditor) {
+        participant.priorities[priority] = creditor;
+      } else {
+        delete participant.priorities[priority];
+      }
       participants = Object.assign(participants, { [debitor]: participant });
       saveState();
     }
@@ -111,8 +115,16 @@
     });
     const debitor = debitors[0];
     creditors.sort((a, b) => {
-      const priorityA = debitor.priorities[a.name];
-      const priorityB = debitor.priorities[b.name];
+      let priorityA;
+      let priorityB;
+      for (const p in debitor.priorities) {
+        if (debitor.priorities[p] === a.name) {
+          priorityA = debitor.priorities[p];
+        }
+        if (debitor.priorities[p] === b.name) {
+          priorityB = debitor.priorities[p];
+        }
+      }
       if (priorityA < priorityB || priorityB === undefined) {
         return -1;
       }
@@ -199,7 +211,7 @@
       <div><b>{debitor.name}</b></div>
       {#each creditors as creditor, i}
         <div>{i + 1}&nbsp;
-          <select on:change={setPriority(debitor.name, i)}>
+          <select on:change={setPriority(debitor.name, i)} value="{debitor.priorities[i]}">
             <option value="" />
             {#each creditors as creditorOption}
               <option value="{creditorOption.name}">{creditorOption.name}</option>
