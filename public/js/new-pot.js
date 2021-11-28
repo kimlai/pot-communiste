@@ -1,4 +1,4 @@
-import { update } from "https://cdn.jsdelivr.net/npm/idb-keyval@5/dist/esm/index.js";
+import { update } from "https://cdn.jsdelivr.net/npm/idb-keyval@6/+esm";
 
 document.querySelector("form").addEventListener("submit", e => {
   e.preventDefault();
